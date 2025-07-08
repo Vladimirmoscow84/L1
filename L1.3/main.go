@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 /*Реализовать постоянную запись данных в канал (в главной горутине).
@@ -11,28 +12,33 @@ import (
 
 Программа должна принимать параметром количество воркеров и при старте создавать указанное число горутин-воркеров.*/
 
-func readFromWorkers(cOut chan int, wg *sync.WaitGroup) int {
-	value := <-cOut
-	wg.Done()
-	return value
-}
-
 func main() {
 	var numberWorkers int
 	fmt.Println("Введите количество воркеров")
 	fmt.Scan(&numberWorkers)
-	cIn := make(chan int)
-	for i := 0; i < 5; i++ {
-		cIn <- i
-	}
-
 	wg := sync.WaitGroup{}
-	for range numberWorkers {
+
+	cIn := make(chan int)
+
+	for value := range numberWorkers {
 		wg.Add(1)
-		go readFromWorkers(cIn, &wg)
+		go func() {
+			defer wg.Done()
+			for data := range cIn {
+				fmt.Printf("worker %d: %d\n", value, data)
+			}
+			fmt.Printf("worker %d has closed\n", value)
+
+		}()
+
 	}
 
-	wg.Wait()
+	for i := 1; i < 15; i++ {
+		cIn <- i
+		time.Sleep(1 * time.Second)
+	}
+	fmt.Println("The work has done")
 	close(cIn)
+	wg.Wait()
 
 }

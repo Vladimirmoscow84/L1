@@ -15,7 +15,7 @@ func main() {
 	for _, v := range arr {
 		wg.Add(1)
 		go func() {
-			fmt.Println(v * v)
+			fmt.Printf("Квадрат числа %d равен %d\n", v, v*v)
 			wg.Done()
 		}()
 	}
