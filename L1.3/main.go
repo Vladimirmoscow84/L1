@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -14,11 +17,17 @@ import (
 
 func main() {
 	var numberWorkers int
-	fmt.Println("Введите количество воркеров")
+	fmt.Println("Input number of workers")
 	fmt.Scan(&numberWorkers)
 	wg := sync.WaitGroup{}
 
+	// канал для записи данных в главной горутине
 	cIn := make(chan int)
+
+	//канал для получения сигнала на закрытие канала в главной горутине
+	cCall := make(chan os.Signal, 1)
+
+	signal.Notify(cCall, syscall.SIGINT)
 
 	for value := range numberWorkers {
 		wg.Add(1)
@@ -26,6 +35,7 @@ func main() {
 			defer wg.Done()
 			for data := range cIn {
 				fmt.Printf("worker %d: %d\n", value, data)
+				time.Sleep(500 * time.Millisecond)
 			}
 			fmt.Printf("worker %d has closed\n", value)
 
@@ -33,12 +43,16 @@ func main() {
 
 	}
 
-	for i := 1; i < 15; i++ {
-		cIn <- i
-		time.Sleep(1 * time.Second)
+	for i := 1; i > 0; i++ {
+		select {
+		case <-cCall:
+			close(cIn)
+			wg.Wait()
+			fmt.Println("end of work")
+			os.Exit(0)
+		default:
+			cIn <- i
+		}
 	}
-	fmt.Println("The work has done")
-	close(cIn)
-	wg.Wait()
 
 }
