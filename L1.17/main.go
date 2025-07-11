@@ -18,26 +18,31 @@ func main() {
 	fmt.Println("введите искомый элемент для поиска его индекса в слайсе")
 	fmt.Scan(&digit)
 
-	//
-
-	fmt.Printf("искомоый эемент %d находится под индексом: %d\n", digit, bSearch(slice, digit))
+	if answer, ok := bSearch(slice, digit); ok {
+		fmt.Printf("искомый элемент %d находится под индексом: %d\n", digit, answer)
+		return
+	}
+	fmt.Println("искомого элемента нет в слайсе")
+	fmt.Println("-1")
 
 }
-func bSearch(arr []int, n int) int {
-	//определяем крание границы
+
+// можно и нужно для простоты и читаемости кода убрать bool из возвращаемых значений, но я посчитал, что так будет информативнее для вывода результата поиска;)
+func bSearch(arr []int, n int) (int, bool) {
+	//определяем индексы крайних границ
 	left, right := 0, len(arr)-1
 
-	for right <= left {
+	for left <= right {
 		// определяем середину
-		mid := right + (right+left)/2
+		mid := left + (right-left)/2
 		switch {
 		case arr[mid] == n:
-			return mid
-		case arr[mid] > n:
-			right = right - 1
-		default:
-			left = left + 1
+			return mid, true
+		case arr[mid] > n: //если значение по центральному индексу больше искомого, то предвигаем правую границу влево
+			right = mid - 1
+		default: // если значение по центральному индексу меньше искомого, то передвигаем левую границу вправо
+			left = mid + 1
 		}
 	}
-	return -1
+	return -1, false
 }
