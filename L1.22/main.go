@@ -10,25 +10,27 @@ import (
 )
 
 func main() {
-	//заводим два "больших" числа
-
-	num1 := big.NewInt(1048576)
-	num2 := big.NewInt(2097152)
+	var a, b float64
+	fmt.Println("введите числа")
+	fmt.Scan(&a, &b)
+	//переводим данные числа в big.Int
+	num1 := big.NewFloat(a)
+	num2 := big.NewFloat(b)
 
 	//операция сложения
-	sum := new(big.Int).Add(num1, num2)
-	fmt.Printf("сложение: %d\n", sum)
+	sum := new(big.Float).Add(num1, num2)
+	fmt.Printf("сложение: %s\n", sum.String())
 
 	//опрация вычитания
-	dif := new(big.Int).Sub(num2, num1)
-	fmt.Printf("вычитание: %d\n", dif)
+	dif := new(big.Float).Sub(num1, num2)
+	fmt.Printf("вычитание: %s\n", dif.String())
 
 	//операция умножения
-	mult := new(big.Int).Mul(num1, num2)
-	fmt.Printf("умножение: %v\n", mult)
+	mult := new(big.Float).Mul(num1, num2)
+	fmt.Printf("умножение: %s\n", mult.String())
 
 	//операция деления
-	div := new(big.Int).Div(num2, num1)
-	fmt.Printf("деление: %v\n", div)
+	div := new(big.Float).Quo(num1, num2)
+	fmt.Printf("деление: %s\n", div.String())
 
 }
