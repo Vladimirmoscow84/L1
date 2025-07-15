@@ -17,12 +17,16 @@ func main() {
 	fmt.Scan(&i)
 
 	//проверка на соответствие индекса заданному слайсу
-	if i < 0 || i > len(slice) {
+	if i < 0 || i >= len(slice) {
 		fmt.Printf("такого индекса в слайсе не существует\nвыход из программы")
+		return
 
 	}
-	newSlice := copy(slice[:i], slice[i+1:])
+	//сдвигается хвост слайса на место удаляемого эелемента
+	copy(slice[i:], slice[i+1:])
 
-	fmt.Printf("итоговый слайс без элемента: %v\n", newSlice)
+	//уменьшается длина слайса на 1
+	slice = slice[:len(slice)-1]
 
+	fmt.Printf("итоговый слайс без элемента: %v\n", slice)
 }
