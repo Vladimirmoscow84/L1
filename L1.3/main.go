@@ -31,15 +31,15 @@ func main() {
 
 	for value := range numberWorkers {
 		wg.Add(1)
-		go func() {
+		go func(i int) {
 			defer wg.Done()
 			for data := range cIn {
-				fmt.Printf("worker %d: %d\n", value, data)
+				fmt.Printf("worker %d: %d\n", i, data)
 				time.Sleep(500 * time.Millisecond)
 			}
-			fmt.Printf("worker %d has closed\n", value)
+			fmt.Printf("worker %d has closed\n", i)
 
-		}()
+		}(value)
 
 	}
 
