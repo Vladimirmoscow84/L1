@@ -14,10 +14,10 @@ func main() {
 
 	for _, v := range arr {
 		wg.Add(1)
-		go func() {
-			fmt.Printf("Квадрат числа %d равен %d\n", v, v*v)
+		go func(i int) {
+			fmt.Printf("Квадрат числа %d равен %d\n", i, i*i)
 			wg.Done()
-		}()
+		}(v)
 	}
 	wg.Wait()
 }
